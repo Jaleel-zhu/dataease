@@ -14,6 +14,7 @@ import { PointLayer } from '@antv/l7-layers'
 import { LayerPopup } from '@antv/l7'
 import { mapRendered, mapRendering } from '@/views/chart/components/js/panel/common/common_antv'
 import { configCarouselTooltip } from '@/views/chart/components/js/panel/charts/map/tooltip-carousel'
+import { DEFAULT_BASIC_STYLE } from '@/views/chart/components/editor/util/chart'
 const { t } = useI18n()
 
 /**
@@ -36,7 +37,10 @@ export class SymbolicMap extends L7ChartView<Scene, L7Config> {
       'mapBaseStyle',
       'symbolicMapStyle',
       'zoom',
-      'showLabel'
+      'showLabel',
+      'autoFit',
+      'mapCenter',
+      'zoomLevel'
     ],
     'label-selector': ['color', 'fontSize', 'showFields', 'customContent'],
     'tooltip-selector': [
@@ -85,18 +89,28 @@ export class SymbolicMap extends L7ChartView<Scene, L7Config> {
       miscStyle = parseJson(chart.customAttr).misc
     }
 
-    const mapStyle = `amap://styles/${basicStyle.mapStyle ? basicStyle.mapStyle : 'normal'}`
-    const key = await this.getMapKey()
+    let mapStyle = basicStyle.mapStyleUrl
+    if (basicStyle.mapStyle !== 'custom') {
+      mapStyle = `amap://styles/${basicStyle.mapStyle ? basicStyle.mapStyle : 'normal'}`
+    }
+    const mapKey = await this.getMapKey()
+    let center: [number, number] = [
+      DEFAULT_BASIC_STYLE.mapCenter.longitude,
+      DEFAULT_BASIC_STYLE.mapCenter.latitude
+    ]
+    if (basicStyle.autoFit === false) {
+      center = [basicStyle.mapCenter.longitude, basicStyle.mapCenter.latitude]
+    }
     // 底层
     const scene = new Scene({
       id: container,
       logoVisible: false,
       map: new GaodeMap({
-        token: key ?? undefined,
+        token: mapKey?.key ?? undefined,
         style: mapStyle,
         pitch: miscStyle.mapPitch,
-        center: [104.434765, 38.256735],
-        zoom: 2.5,
+        center,
+        zoom: basicStyle.autoFit === false ? basicStyle.zoomLevel : 2.5,
         showLabel: !(basicStyle.showLabel === false)
       })
     })
@@ -203,7 +217,7 @@ export class SymbolicMap extends L7ChartView<Scene, L7Config> {
           }
         })
       : []
-    const pointLayer = new PointLayer({ autoFit: true })
+    const pointLayer = new PointLayer({ autoFit: !(basicStyle.autoFit === false) })
       .source(data, {
         parser: {
           type: 'json',

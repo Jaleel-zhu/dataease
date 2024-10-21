@@ -1586,7 +1586,14 @@ export const DEFAULT_BASIC_STYLE: ChartBasicStyle = {
   layout: 'horizontal',
   mapSymbolSizeMin: 4,
   mapSymbolSizeMax: 30,
-  showLabel: true
+  showLabel: true,
+  mapStyleUrl: '',
+  autoFit: true,
+  mapCenter: {
+    longitude: 116,
+    latitude: 39
+  },
+  zoomLevel: 7
 }
 
 export const BASE_VIEW_CONFIG = {

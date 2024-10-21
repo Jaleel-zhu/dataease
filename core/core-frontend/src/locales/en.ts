@@ -529,10 +529,13 @@ export default {
       save_form: 'Save Form',
       default: 'default',
       default_built_in: 'Built-in Database',
-      lt_check: 'need less than {0}',
-      gt_check: 'need greater than {0}',
-      le_check: 'need less than or equal to {0}',
-      ge_check: 'need greater than or equal to {0}'
+      lt_check: 'need less than {0}: {1}',
+      gt_check: 'need greater than {0}: {1}',
+      le_check: 'need less than or equal to {0}: {1}',
+      ge_check: 'need greater than or equal to {0}: {1}',
+      status: 'Status',
+      status_0: 'Unfinished',
+      status_1: 'Finished'
     },
     database: {
       nvarchar: 'Nvarchar',
